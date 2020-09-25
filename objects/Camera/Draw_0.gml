@@ -17,15 +17,24 @@ shader_set_uniform_f(uniform_light_cutoff, dcos(45));
 var camera = camera_get_active();
 var camera_distance = 160;
 
-var xto = Player.x;
-var yto = Player.y;
-var zto = Player.z + 64;
-var xfrom = xto + camera_distance * dcos(Player.look_dir) * dcos(Player.look_pitch);
-var yfrom = yto - camera_distance * dsin(Player.look_dir) * dcos(Player.look_pitch);
-var zfrom = zto - camera_distance * dsin(Player.look_pitch);
+if (view_current == 0) {
+    var xto = Player.x;
+    var yto = Player.y;
+    var zto = Player.z + 64;
+    var xfrom = xto + camera_distance * dcos(Player.look_dir) * dcos(Player.look_pitch);
+    var yfrom = yto - camera_distance * dsin(Player.look_dir) * dcos(Player.look_pitch);
+    var zfrom = zto - camera_distance * dsin(Player.look_pitch);
+} else {
+    var xto = 0;
+    var yto = 0;
+    var zto = 0;
+    var xfrom = room_width;
+    var yfrom = room_height;
+    var zfrom = 400;
+}
 
 view_mat = matrix_build_lookat(xfrom, yfrom, zfrom, xto, yto, zto, 0, 0, 1);
-proj_mat = matrix_build_projection_perspective_fov(-60, -window_get_width() / window_get_height(), 1, 32000);
+proj_mat = matrix_build_projection_perspective_fov(-60, -view_get_wport(view_current) / view_get_hport(view_current), 1, 32000);
 camera_set_view_mat(camera, view_mat);
 camera_set_proj_mat(camera, proj_mat);
 camera_apply(camera);
